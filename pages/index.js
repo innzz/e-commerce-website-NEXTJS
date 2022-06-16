@@ -1,5 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import Footer from '../components/Footer'
+import NavBar from '../components/NavBar'
 
 export default function Home() {
   return (<>
@@ -8,9 +10,11 @@ export default function Home() {
         <meta name="description" content="e-commerce website" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1>Hi this is inzamam here</h1>
-      <div className="mx-4 bg-slate-600">This is me</div>
-      <div className="mx-4">This is me</div>
+      <NavBar />
+      <div>
+        {/* <Image src='/home.jpg' alt='home'  width={'100%'} height={500} ></Image> */}
+      </div>
+      <Footer />
       </>
   )
 }
