@@ -2,7 +2,8 @@ import React from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/router'
 
-function Slug({addToCart}) {
+function Slug({cart,addToCart}) {
+  console.log(cart);
     const router = useRouter();
     const {slug} = router.query;
     const [pin, setPin] = useState();
