@@ -38,7 +38,7 @@ function NavBar({cart,addToCart,removeFromCart,clearCart,subtotal}) {
     </a>
     </Link>
     <div  className="lg:w-2/5 inline-flex lg:justify-end ml-5 lg:ml-0">
-      <Link href={'/login'}><MdAccountCircle className='mx-3 mt-4 md:mt-0 cursor-pointer'  size={33}/></Link>
+      <Link href={'/login'}><a><MdAccountCircle className='mx-3 mt-4 md:mt-0 cursor-pointer'  size={33}/></a></Link>
       <button onClick={toggleCart} className="inline-flex items-center bg-gray-100 border-0 py-1 px-4 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">Go to
        <GrCart style={{marginLeft: '8px'}} />
       </button>
