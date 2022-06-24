@@ -54,8 +54,10 @@ export async function getServerSideProps(context) {
     await mongoose.connect(process.env.MONGO_URI);
 }
 let products = await Product.find({category: 'tshirts'});
+// console.log("This is the products",products);
 let tshirts = {};
-    for(let item of products){
+for(let item of products){
+      // console.log("This is the item",item);
         if (item.title in tshirts) {
             if (!tshirts[item.title].color.includes(item.color) && item.available > 0) {
                 tshirts[item.title].color.push(item.color);
@@ -71,6 +73,7 @@ let tshirts = {};
                 tshirts[item.title].size = [item.size];
             }
         }
+        // console.log("This is the tshirts",tshirts);
     }
   return {
     props: {products: JSON.parse(JSON.stringify(tshirts))}, // will be passed to the page component as props
