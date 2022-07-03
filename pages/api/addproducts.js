@@ -17,6 +17,7 @@ const handler = async(req,res)=>{
             })
             await p.save();
         }
+        console.log('yes');
         res.status(200).json({success: "success"})
     }
     else{
