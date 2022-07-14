@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,7 +9,12 @@ function Signup() {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const router = useRouter()
+  const router = useRouter();
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      router.push('/');
+    }
+  }, [])
 
   const handleSubmit = async (e)=>{
     e.preventDefault();

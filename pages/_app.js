@@ -5,6 +5,7 @@ import '../styles/globals.css';
 import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import LoadingBar from 'react-top-loading-bar'
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
@@ -12,8 +13,15 @@ function MyApp({ Component, pageProps }) {
   const [subtotal,setSubtotal] = useState(0);
   const [user,setUser] = useState({value : null});
   const [key,setKey] = useState(0);
+  const [progress, setProgress] = useState(0)
 
   useEffect(() => {
+  router.events.on('routeChangeComplete', ()=>{
+    setProgress(100);
+  })
+  router.events.on('routeChangeStart', ()=>{
+    setProgress(40);
+  })
    try {
     if (localStorage.getItem('cart')) {
       setCart(JSON.parse(localStorage.getItem("cart")));
@@ -93,7 +101,14 @@ function MyApp({ Component, pageProps }) {
     saveCart({})
   }
   
-  return <><NavBar logout={logout} user={user} key={key} cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} subtotal={subtotal} />
+  return <>
+  <LoadingBar
+        color='#07bc0c'
+        progress={progress}
+        waitingTime={400}
+        onLoaderFinished={() => setProgress(0)}
+      />
+  <NavBar logout={logout} user={user} key={key} cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} subtotal={subtotal} />
   <Component buyNow={buyNow} cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart} subtotal={subtotal} {...pageProps} />
   <Footer />
   </>
