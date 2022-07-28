@@ -41,16 +41,16 @@ function NavBar({logout,user,cart,addToCart,removeFromCart,clearCart,subtotal}) 
     </a>
     </Link>
     <div  className="lg:w-2/5 inline-flex lg:justify-end ml-5 lg:ml-0 relative">
-      <a onMouseOver={()=>setDropDown(true)} onMouseLeave={()=>{setDropDown(false)}}>
+      <span onMouseOver={()=>setDropDown(true)} onMouseLeave={()=>{setDropDown(false)}}>
       {dropDown && <div className="absolute top-8 right-28 rounded-md px-5 w-36 bg-green-200">
         <ul>
           <Link href={'/account'}><a><li className='py-2 hover:text-green-400 cursor-pointer '>My Account</li></a></Link>
-          <Link href={'/orders'}><a><li className='py-2 hover:text-green-400 cursor-pointer '>Orders</li></a></Link>
+          <Link href={'/order'}><a><li className='py-2 hover:text-green-400 cursor-pointer '>Orders</li></a></Link>
           <li onClick={logout} className='py-2 hover:text-green-400 cursor-pointer '>Log Out</li>
         </ul>
       </div>}
       {user.value && <MdAccountCircle className='mx-3 mt-4 md:mt-0 cursor-pointer'  size={33}/>}
-      </a>
+      </span>
       {!user.value && <Link href={'/login'}><a>
       <button className="inline-flex items-center mr-6 bg-green-100 border-0 py-1 px-4 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">Login
       </button> 

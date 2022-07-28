@@ -51,7 +51,7 @@ function Tshirts({products}) {
 
 export async function getServerSideProps(context) {
   if(!mongoose.connections[0].readyState){
-    await mongoose.connect('mongodb://localhost:27017/e-commerce-website');
+    await mongoose.connect(process.env.MONGO_URI);
 }
 let products = await Product.find({category: 'tshirts'});
 // console.log("This is the products",products);
