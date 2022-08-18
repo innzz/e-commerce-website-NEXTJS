@@ -23,7 +23,6 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
     let txnRes = await a.json();
     let txnToken = txnRes.txnToken;
     console.log(txnToken);
-    //
 
     var config = {
       root: "",
