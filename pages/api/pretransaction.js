@@ -4,11 +4,14 @@ const PaytmChecksum = require('paytmchecksum');
 
 export default async function handler(req, res) {
 if(req.method == 'POST'){
+
+//insert an entry in the orders page as pending
+
 var paytmParams = {};
 
 paytmParams.body = {
     "requestType"   : "Payment",
-    "mid"           : process.env.PAYTM_MID,
+    "mid"           : process.env.NEXT_PUBLIC_PAYTM_MID,
     "websiteName"   : "YOUR_WEBSITE_NAME",
     "orderId"       : req.body.oid,
     "callbackUrl"   : `${process.env.NEXT_PUBLIC_HOST}/api/posttransaction`,
@@ -25,7 +28,7 @@ paytmParams.body = {
 * Generate checksum by parameters we have in body
 * Find your Merchant Key in your Paytm Dashboard at https://dashboard.paytm.com/next/apikeys 
 */
-const checksum = await PaytmChecksum.generateSignature(JSON.stringify(paytmParams.body), process.env.PAYTM_MID )
+const checksum = await PaytmChecksum.generateSignature(JSON.stringify(paytmParams.body), process.env.PAYTM_KEY )
 
     paytmParams.head = {
         "signature"    : checksum
@@ -44,7 +47,7 @@ const checksum = await PaytmChecksum.generateSignature(JSON.stringify(paytmParam
                 hostname: 'securegw.paytm.in',
         
                 port: 443,
-                path: `/theia/api/v1/initiateTransaction?mid=${process.env.PAYTM_MID}&orderId=ORDERID_98765`,
+                path: `/theia/api/v1/initiateTransaction?mid=${process.env.NEXT_PUBLIC_PAYTM_MID}&orderId=${req.body.oid}`,
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -60,6 +63,7 @@ const checksum = await PaytmChecksum.generateSignature(JSON.stringify(paytmParam
         
                 post_res.on('end', function(){
                     console.log('Response: ', response);
+                    resolve(JSON.parse(response).body)
                 });
             });
         

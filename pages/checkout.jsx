@@ -8,9 +8,10 @@ import Script from "next/script";
 function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
   const initiatePayment = async () => {
     let oid =  Math.floor(Math.random() * Date.now());
+
     //Get a transaction token
 
-    const data = { cart, subtotal, email: "email" };
+    const data = { cart, subtotal,oid, email: "email" };
 
     let a = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pretransaction`, {
       method: "POST", // or 'PUT'
@@ -19,7 +20,8 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
       },
       body: JSON.stringify(data),
     });
-    let txnToken = a.json();
+    let txnRes = await a.json();
+    let txnToken = txnRes.txnToken;
     console.log(txnToken);
 
     var config = {
@@ -61,8 +63,7 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
       <Script
         type="application/javascript"
         crossorigin="anonymous"
-        src={`${process.env.PAYTM_HOST}/merchantpgpui/checkoutjs/merchants/${process.env.PAYTM_MID}.js`}
-        onload="onScriptLoad();"
+        src={`${process.env.NEXT_PUBLIC_PAYTM_HOST}/merchantpgpui/checkoutjs/merchants/${process.env.NEXT_PUBLIC_PAYTM_MID}.js`}
       />
       <h1 className="font-bold text-3xl my-8 text-center">Checkout</h1>
       <h2 className="font-bold text-xl">1. Delivery Details</h2>
