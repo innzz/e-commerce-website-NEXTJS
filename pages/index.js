@@ -9,7 +9,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className='bg-black'>
-        <img src='/home.jpg' alt='home' style={{opacity: '40%'}} />
+        <img src='/home.jpg' alt='home' style={{opacity: '40%', width: "100%", height: "80vh", objectFit: "cover", objectPosition:"center"}} />
       </div>
       <section className="text-gray-600 body-font">
   <div className="container px-5 py-24 mx-auto">

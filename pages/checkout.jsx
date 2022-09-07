@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 import { BsFillBagCheckFill } from "react-icons/bs";
@@ -6,12 +6,47 @@ import Head from "next/head";
 import Script from "next/script";
 
 function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+
+  const [disabled, setDisabled] = useState(true);
+
+  const handleChange = (e)=>{
+    if (e.target.name == 'name') {
+      setName(e.target.value);
+    }
+    else if (e.target.name == 'phone') {
+      setPhone(e.target.value);
+    }
+    else if (e.target.name == 'email') {
+      setEmail(e.target.value);
+    }
+    else if (e.target.name == 'pincode') {
+      setPincode(e.target.value);
+    }
+    else if (e.target.name == 'address') {
+      setAddress(e.target.value);
+    }
+    if (name.length>3 && phone.length>3 && email.length>3 && pincode.length>3 && address.length>3) {
+      setDisabled(false);
+    }
+    else{
+      setDisabled(true)
+    }
+  }
+
   const initiatePayment = async () => {
     let oid =  Math.floor(Math.random() * Date.now());
 
     //Get a transaction token
 
-    const data = { cart, subtotal,oid, email: "email" };
+    const data = { cart, subtotal,oid, email: email, name, address, pincode, phone };
+    // console.log(data)
 
     let a = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pretransaction`, {
       method: "POST", // or 'PUT'
@@ -22,35 +57,35 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
     });
     let txnRes = await a.json();
     let txnToken = txnRes.txnToken;
-    console.log(txnToken);
+    // console.log(txnToken);
 
-    var config = {
-      root: "",
-      flow: "DEFAULT",
-      data: {
-        orderId: oid /* update order id */,
-        token: txnToken /* update token value */,
-        tokenType: "TXN_TOKEN",
-        amount: subtotal /* update amount */,
-      },
-      handler: {
-        notifyMerchant: function (eventName, data) {
-          console.log("notifyMerchant handler function called");
-          console.log("eventName => ", eventName);
-          console.log("data => ", data);
-        },
-      },
-    };
+    // var config = {
+    //   root: "",
+    //   flow: "DEFAULT",
+    //   data: {
+    //     orderId: oid /* update order id */,
+    //     token: txnToken /* update token value */,
+    //     tokenType: "TXN_TOKEN",
+    //     amount: subtotal /* update amount */,
+    //   },
+    //   handler: {
+    //     notifyMerchant: function (eventName, data) {
+    //       console.log("notifyMerchant handler function called");
+    //       console.log("eventName => ", eventName);
+    //       console.log("data => ", data);
+    //     },
+    //   },
+    // };
 
     // initialze configuration using init method
-    window.Paytm.CheckoutJS.init(config)
-      .then(function onSuccess() {
-        // after successfully updating configuration, invoke JS Checkout
-        window.Paytm.CheckoutJS.invoke();
-      })
-      .catch(function onError(error) {
-        console.log("error => ", error);
-      });
+    // window.Paytm.CheckoutJS.init(config)
+    //   .then(function onSuccess() {
+    //     // after successfully updating configuration, invoke JS Checkout
+    //     window.Paytm.CheckoutJS.invoke();
+    //   })
+    //   .catch(function onError(error) {
+    //     console.log("error => ", error);
+    //   });
   };
   return (
     <div className="container px-2 sm:m-auto">
@@ -60,11 +95,11 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
           content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0"
         />
       </Head>
-      <Script
+      {/* <Script
         type="application/javascript"
         crossorigin="anonymous"
         src={`${process.env.NEXT_PUBLIC_PAYTM_HOST}/merchantpgpui/checkoutjs/merchants/${process.env.NEXT_PUBLIC_PAYTM_MID}.js`}
-      />
+      /> */}
       <h1 className="font-bold text-3xl my-8 text-center">Checkout</h1>
       <h2 className="font-bold text-xl">1. Delivery Details</h2>
       <div className="mx-auto flex my-4">
@@ -74,6 +109,8 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
               Name
             </label>
             <input
+              onChange={handleChange}
+              value={name}
               type="text"
               id="name"
               name="name"
@@ -87,6 +124,8 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
               Email
             </label>
             <input
+              onChange={handleChange}
+              value={email}
               type="email"
               id="email"
               name="email"
@@ -101,6 +140,8 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
             Address
           </label>
           <textarea
+            onChange={handleChange}
+            value={address}
             name="address"
             id="address"
             cols="30"
@@ -118,37 +159,11 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
               Phone
             </label>
             <input
+              onChange={handleChange}
+              value={phone}
               type="text"
               id="phone"
               name="phone"
-              className="w-full bg-white rounded border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-        </div>
-        <div className="px-2 w-1/2">
-          <div className=" mb-4">
-            <label htmlFor="city" className="leading-7 text-sm text-gray-600">
-              City
-            </label>
-            <input
-              type="text"
-              id="city"
-              name="city"
-              className="w-full bg-white rounded border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-        </div>
-      </div>
-      <div className="mx-auto flex my-4">
-        <div className="px-2 w-1/2">
-          <div className=" mb-4">
-            <label htmlFor="state" className="leading-7 text-sm text-gray-600">
-              State
-            </label>
-            <input
-              type="text"
-              id="state"
-              name="state"
               className="w-full bg-white rounded border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
             />
           </div>
@@ -162,10 +177,44 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
               Pincode
             </label>
             <input
+              onChange={handleChange}
+              value={pincode} 
               type="text"
               id="pincode"
               name="pincode"
               className="w-full bg-white rounded border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+            />
+          </div>
+        </div>
+      </div>
+      <div className="mx-auto flex my-4">
+        <div className="px-2 w-1/2">
+          <div className=" mb-4">
+            <label htmlFor="state" className="leading-7 text-sm text-gray-600">
+              State
+            </label>
+            <input
+              value={state}
+              type="text"
+              id="state"
+              name="state"
+              className="w-full bg-white rounded border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+              readOnly={true}
+            />
+          </div>
+        </div>
+        <div className="px-2 w-1/2">
+          <div className=" mb-4">
+            <label htmlFor="city" className="leading-7 text-sm text-gray-600">
+              City
+            </label>
+            <input
+              value={city}        
+              type="text"
+              id="city"
+              name="city"
+              className="w-full bg-white rounded border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+              readOnly={true}
             />
           </div>
         </div>
@@ -223,8 +272,9 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
         <Link href={"/order"}>
           <a>
             <button
+              disabled={disabled}
               onClick={initiatePayment}
-              className="flex mr-2 text-white bg-green-500 border-0 py-2 px-8 focus:outline-none hover:bg-green-600 rounded text-sm"
+              className="disabled:bg-green-300 flex mr-2 text-white bg-green-500 border-0 py-2 px-8 focus:outline-none hover:bg-green-600 rounded text-sm"
             >
               Pay:- ₹{subtotal}
             </button>
