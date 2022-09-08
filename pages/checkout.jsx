@@ -4,8 +4,11 @@ import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 import { BsFillBagCheckFill } from "react-icons/bs";
 import Head from "next/head";
 import Script from "next/script";
+import { set } from "mongoose";
+import { useRouter } from 'next/router'
 
 function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
+  const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -56,22 +59,32 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
       body: JSON.stringify(data),
     });
     let txnRes = await a.json();
-    let txnToken = txnRes.txnToken;
-    // console.log(txnToken);
-
+    if (txnRes.status == "success") {
+      router.push({
+        pathname: '/order',
+        query: {
+          orderId: txnRes.orderId,
+        }
+    })
+      // router.push('/order', {query: {orderId: txnRes.orderId}})
+    }
+    // console.log(txnRes)
+    // let txnToken = txnRes.txnToken;
+    // console.log("txnToken");
+    
     // var config = {
-    //   root: "",
-    //   flow: "DEFAULT",
-    //   data: {
-    //     orderId: oid /* update order id */,
-    //     token: txnToken /* update token value */,
+      //   root: "",
+      //   flow: "DEFAULT",
+      //   data: {
+        //     orderId: oid /* update order id */,
+        //     token: txnToken /* update token value */,
     //     tokenType: "TXN_TOKEN",
     //     amount: subtotal /* update amount */,
     //   },
     //   handler: {
-    //     notifyMerchant: function (eventName, data) {
-    //       console.log("notifyMerchant handler function called");
-    //       console.log("eventName => ", eventName);
+      //     notifyMerchant: function (eventName, data) {
+        //       console.log("notifyMerchant handler function called");
+        //       console.log("eventName => ", eventName);
     //       console.log("data => ", data);
     //     },
     //   },
@@ -80,13 +93,14 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
     // initialze configuration using init method
     // window.Paytm.CheckoutJS.init(config)
     //   .then(function onSuccess() {
-    //     // after successfully updating configuration, invoke JS Checkout
-    //     window.Paytm.CheckoutJS.invoke();
-    //   })
-    //   .catch(function onError(error) {
-    //     console.log("error => ", error);
-    //   });
-  };
+      //     // after successfully updating configuration, invoke JS Checkout
+      //     window.Paytm.CheckoutJS.invoke();
+      //   })
+      //   .catch(function onError(error) {
+        //     console.log("error => ", error);
+        //   });
+      };
+      // console.log(router)
   return (
     <div className="container px-2 sm:m-auto">
       <Head>
@@ -269,7 +283,7 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
         <span className="total font-bold">Subtotal: ₹{subtotal}</span>
       </div>
       <div className="mx-4">
-        <Link href={"/order"}>
+        {/* <Link href={"/order"}> */}
           <a>
             <button
               disabled={disabled}
@@ -279,7 +293,7 @@ function Checkout({ cart, addToCart, removeFromCart, clearCart, subtotal }) {
               Pay:- ₹{subtotal}
             </button>
           </a>
-        </Link>
+        {/* </Link> */}
       </div>
     </div>
   );

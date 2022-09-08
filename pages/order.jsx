@@ -1,6 +1,30 @@
-import React from 'react'
+import { useRouter } from 'next/router'
+import React, { useEffect } from 'react'
 
 function Order({cart,addToCart,removeFromCart,clearCart,subtotal}) {
+  let router = useRouter();
+  const {query:{orderId}} = router;
+  // console.log(orderId);
+
+  const updateOrderStatus = async ()=>{
+    const data = { orderId };
+    let req = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/posttransaction`, {
+      method: "POST", // or 'PUT'
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    let res = await req.json();
+    console.log(res)
+    return res;
+  }
+
+  useEffect(() => {
+    let updatedOrderStatus = updateOrderStatus();
+    console.log(updatedOrderStatus);
+  }, [])
+  
   return (
     <div>
       <section className="text-gray-600 body-font overflow-hidden">

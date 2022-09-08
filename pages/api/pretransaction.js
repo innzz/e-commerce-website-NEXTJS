@@ -5,14 +5,14 @@ import Order from "../../models/Order";
 import connectDb from "../../middleware/mongoose";
 
 const handler = async(req,res)=>{
-    console.log(req.body)
 if(req.method == 'POST'){
 
     let order = new Order({
         email: req.body.email,
         orderId: req.body.oid,
         address: req.body.address,
-        amount: req.body.subtotal
+        amount: req.body.subtotal,
+        products: req.body.cart
     });
     await order.save();
 
@@ -85,7 +85,7 @@ if(req.method == 'POST'){
 
 //     let myr = await requestAsync();
 //     res.status(200).json(myr);
-res.status(200).json({success: "success"})
+res.status(200).json({status: "success",orderId: req.body.oid})
 }
 else{
 res.status(400).json({error: "error"})
